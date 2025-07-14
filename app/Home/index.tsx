@@ -91,8 +91,8 @@ export default function EventsScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={fetchTrains} />
             }
           >
-            <View>
-              {!trains.length ? (
+            <View style={styles.trainsList}>
+              {trains.length ? (
                 trains.map((train, index) => (
                   <View
                     style={[styles.trainCard, { backgroundColor }]}
@@ -119,8 +119,12 @@ export default function EventsScreen() {
 }
 
 const styles = StyleSheet.create({
+  trainsList:{
+    flexDirection: "column",
+    gap: 8,
+  },
   trainCard: {
-    padding: 16,
+    padding: 8,
   },
   addButton: {
     width: 40,
@@ -132,6 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 8,
   },
 });
