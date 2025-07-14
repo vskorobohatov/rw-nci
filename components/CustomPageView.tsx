@@ -8,31 +8,21 @@ import {
   type ViewProps,
 } from "react-native";
 
-import { useThemeColor } from "@/hooks/useThemeColor";
-
-export type ThemedViewProps = ViewProps & {
-  lightColor?: string;
-  darkColor?: string;
+export type CustomPageViewProps = ViewProps & {
+  scrollViewProps?: any;
 };
 
-export function ThemedView({
+export function CustomPageView({
   style,
-  lightColor,
-  darkColor,
+  scrollViewProps,
   ...otherProps
-}: ThemedViewProps) {
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "background"
-  );
-
+}: CustomPageViewProps) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView>
+      <ScrollView {...scrollViewProps}>
         <View
           style={[
             {
-              backgroundColor,
               padding: 16,
               flexDirection: "column",
               alignItems: "stretch",
@@ -50,5 +40,7 @@ export function ThemedView({
 const styles = StyleSheet.create({
   safeArea: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    height: "100%",
+    gap: "16px",
   },
 });

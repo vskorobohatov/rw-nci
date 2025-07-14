@@ -37,7 +37,6 @@ async function registerForPushNotificationsAsync() {
       name: "A channel is needed for the permissions prompt to appear",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
     });
   }
 
@@ -72,8 +71,6 @@ async function registerForPushNotificationsAsync() {
     } catch (e) {
       token = `${e}`;
     }
-  } else {
-    alert("Must use physical device for Push Notifications");
   }
 
   return token;

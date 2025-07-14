@@ -1,1 +1,1 @@
-export const API_URL = 'https://scalan.com/apps/rw_nsi';
+export const API_URL = 'https://scalan.com/apps/rw_nsi/api';
