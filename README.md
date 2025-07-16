@@ -1,50 +1,53 @@
-# Welcome to your Expo app 👋
+# 🚆 Railway Events Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile app built with **React Native** and **Expo** that allows users to view railway events and train schedules. The application includes multiple screens to browse current and upcoming train activity and other relevant railway events.
 
-## Get started
+---
 
-1. Install dependencies
+## ✨ Features
 
-   ```bash
-   npm install
-   ```
+- 📅 **Train Schedule Screens** – View real-time and upcoming train schedules.
+- 🛤️ **Event Tracker** – Stay updated with planned or unplanned railway events.
+- 🔍 **Multi-Screen Navigation** – Smooth navigation between different views.
+- ⚡ **Built with Expo** – Fast development with Expo's tooling and over-the-air updates.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠 Tech Stack
 
-In the output, you'll find options to open the app in a
+- **React Native** – Cross-platform UI development
+- **Expo** – Fast development workflow for React Native
+- **React Navigation** – For screen and stack navigation
+- **TypeScript** – Core app logic and structure
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🚀 Getting Started
 
-## Get a fresh project
+### Prerequisites
 
-When you're ready, run:
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Git](https://git-scm.com/)
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
-npm run reset-project
-```
+git clone https://github.com/vskorobohatov/rw-nci
+cd rw-nci
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
 
-## Learn more
+```bash
+npm install
+# or
+yarn install
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Start the Expo development server:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start
