@@ -39,6 +39,7 @@ Make sure you have the following installed:
 ```bash
 git clone https://github.com/vskorobohatov/rw-nci
 cd rw-nci
+```
 
 2. Install dependencies:
 
@@ -46,8 +47,10 @@ cd rw-nci
 npm install
 # or
 yarn install
+```
 
 3. Start the Expo development server:
 
 ```bash
 npx expo start
+```
