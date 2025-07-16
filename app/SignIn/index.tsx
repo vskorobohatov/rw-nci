@@ -2,8 +2,8 @@ import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
 import sharedStyles from "@/constants/Styles";
+import { saveToken } from "@/helpers/tokenHelper";
 import { AuthService } from "@/services/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRouter } from "expo-router";
 import React, { useLayoutEffect, useState } from "react";
 import {
@@ -31,7 +31,7 @@ const SignIn = () => {
     if (email && password) {
       try {
         const res = await AuthService.login(email, password);
-        await AsyncStorage.setItem("jwt", res.jwt);
+        await saveToken(res.jwt);
         router.replace("/Home");
       } catch (error) {
         console.error("Sign in error:", error);

@@ -1,4 +1,5 @@
 import { API_URL } from "@/config";
+import { getCachedData, setCachedData } from "@/helpers/cacheHelper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -19,15 +20,37 @@ class TrainsServiceClass {
     baseURL: API_URL,
   });
 
+  async fetchWithCache(url: string, headers: any = {}) {
+    const cached = await getCachedData(url);
+    try {
+      if (cached) return cached;
+      const response = await this.api.get(url, { headers });
+      await setCachedData(url, response.data);
+      return response.data;
+    } catch (err) {
+      // No internet or server error
+      if (cached) return cached;
+      console.error("Fetch error:", err);
+      throw new Error("No data available (offline and no cache)");
+    }
+  }
+
   private async getAuthHeaders() {
     const token = await AsyncStorage.getItem("jwt");
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
-  async getTrains() {
-    const headers = await this.getAuthHeaders();
-    const res = await this.api.get("/trains/list.php", { headers });
-    return res.data;
+  async getTrains(noCache = false) {
+    if (noCache) {
+      console.log("Fetching trains without cache");
+      const headers = await this.getAuthHeaders();
+      const res = await this.api.get("/trains/list.php", { headers });
+      return res.data;
+    } else {
+      console.log("Fetching trains with cache");
+      const res = await this.fetchWithCache("/trains/list.php");
+      return res;
+    }
   }
 
   async addTrain(train: Train) {

@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,9 +7,10 @@ import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import { getToken, removeToken } from "@/helpers/tokenHelper";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,17 +18,18 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const checkLogin = async () => {
     try {
-      const token = await AsyncStorage.getItem("authToken");
-      setIsLoggedIn(!!token);
+      const token = await getToken();
+      if (!token) {
+        router.replace("/SignIn");
+        return;
+      }
       router.replace("/Home");
     } catch (error) {
-      console.error("Ошибка чтения токена", error);
-      setIsLoggedIn(false);
-    } finally {
+      await removeToken();
+      router.replace("/SignIn");
     }
   };
 
@@ -48,18 +49,11 @@ export default function RootLayout() {
           headerShown: false,
         }}
       >
-        {isLoggedIn ? (
-          <>
-            <Stack.Screen name="tabs" />
-            <Stack.Screen name="AddTrain" />
-            <Stack.Screen name="+not-found" />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="SignIn" />
-            <Stack.Screen name="SignUp" />
-          </>
-        )}
+        <Stack.Screen name="Home" />
+        <Stack.Screen name="AddTrain" />
+        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="SignIn" />
+        <Stack.Screen name="SignUp" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -2,8 +2,10 @@ import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
 import sharedStyles from "@/constants/Styles";
+import { saveToken } from "@/helpers/tokenHelper";
 import { AuthService } from "@/services/auth";
 import { useNavigation, useRouter } from "expo-router";
+
 import React, { useLayoutEffect, useState } from "react";
 import {
   Alert,
@@ -32,9 +34,13 @@ const SignUp = () => {
     if (name && email && password) {
       try {
         await AuthService.register(name, email, password);
+        const res = await AuthService.login(email, password);
+        await saveToken(res.jwt);
+        router.replace("/Home");
         Alert.alert("Signed Up", `Welcome, ${name}!`);
       } catch (error) {
         Alert.alert("Error", "Sign up failed. Please try again.");
+        console.error("Sign up error:", error);
       }
     } else {
       Alert.alert("Error", "Please enter name, email, and password.");
