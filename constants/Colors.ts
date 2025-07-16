@@ -16,6 +16,7 @@ export const Colors = {
     tabIconSelected: tintColorLight,
     buttonText: "#0050a0ff",
     error: "#bb2b2bff",
+    success: "#0aa44dff",
   },
   dark: {
     text: "#ECEDEE",
@@ -26,5 +27,6 @@ export const Colors = {
     tabIconSelected: tintColorDark,
     buttonText: "#a6afd9ff",
     error: "#bb2b2bff",
+    success: "#0aa44dff",
   },
 };

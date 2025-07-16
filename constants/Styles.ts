@@ -10,6 +10,7 @@ const sharedStyles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "stretch",
     gap: 8,
+    height: "100%",
   },
 });
 

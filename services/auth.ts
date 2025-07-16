@@ -28,7 +28,7 @@ class AuthServiceClass {
     email: string,
     password: string
   ): Promise<AuthResponse> {
-    const res = await this.api.post<AuthResponse>("/register", {
+    const res = await this.api.post<AuthResponse>("/register.php", {
       name,
       email,
       password,

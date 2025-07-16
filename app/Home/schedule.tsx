@@ -58,29 +58,29 @@ export default function ScheduleScreen() {
         <ThemedHeadline>
           <ThemedText type="title">Schedule</ThemedText>
           <Pressable style={styles.addButton} onPress={onPressAddTrain}>
-            <IconSymbol size={24} name="plus" color={textColor} />
+            <IconSymbol size={22} name="plus" color={textColor} />
           </Pressable>
         </ThemedHeadline>
-        {error ? (
-          <ThemedText type="error">{error}</ThemedText>
-        ) : loading ? (
-          <ActivityIndicator size="large" />
-        ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => fetchTrains(true)}
-              />
-            }
-          >
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => fetchTrains(true)}
+            />
+          }
+        >
+          {error ? (
+            <ThemedText type="error">{error}</ThemedText>
+          ) : loading ? (
+            <ActivityIndicator size="small" />
+          ) : (
             <View style={styles.trainsList}>
               {trains.length ? (
                 trains.map((train, index) => (
                   <Pressable
                     onPress={() => router.push(`/TrainEditor/${train.id}`)}
                     style={[styles.trainCard, { backgroundColor }]}
-                    key={index}
+                    key={train.id || index}
                   >
                     <ThemedText>{`#${train.number}`}</ThemedText>
                     <ThemedText>{train.name}</ThemedText>
@@ -94,8 +94,8 @@ export default function ScheduleScreen() {
                 </View>
               )}
             </View>
-          </ScrollView>
-        )}
+          )}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -105,6 +105,9 @@ const styles = StyleSheet.create({
   trainsList: {
     flexDirection: "column",
     gap: 8,
+    height: "100%",
+    flex: 1,
+    paddingBottom: 48,
   },
   trainCard: {
     padding: 8,
