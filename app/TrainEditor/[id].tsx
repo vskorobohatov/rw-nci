@@ -1,10 +1,13 @@
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedHeadline } from "@/components/ThemedHeadline";
 import { ThemedInput } from "@/components/ThemedInput";
+import { ThemedSelect } from "@/components/ThemedSelect";
 import { ThemedText } from "@/components/ThemedText";
+import { trainScheduleOptions } from "@/constants/Options";
 import sharedStyles from "@/constants/Styles";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Train, TrainsService } from "@/services/trains";
+import Checkbox from "@react-native-community/checkbox";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,6 +19,28 @@ import {
   View,
 } from "react-native";
 
+type DayName = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+
+type Schedule = {
+  type: string;
+  days: Record<DayName, boolean>;
+};
+
+const defaultDays = {
+  Mon: false,
+  Tue: false,
+  Wed: false,
+  Thu: false,
+  Fri: false,
+  Sat: false,
+  Sun: false,
+};
+
+const defaultSchedule = {
+  type: trainScheduleOptions[0].value,
+  days: defaultDays,
+};
+
 const TrainEditorScreen = () => {
   const searchParams = useLocalSearchParams();
   const id = searchParams.id as string;
@@ -26,18 +51,34 @@ const TrainEditorScreen = () => {
   const [arrivalTime, setArrivalTime] = useState("");
   const [trainName, setTrainName] = useState("");
   const [trainNumber, setTrainNumber] = useState("");
-  const [scheduleType, setScheduleType] = useState("everyday");
+  const [schedule, setSchedule] = useState<Schedule>(defaultSchedule);
 
   const textColor = useThemeColor("text");
   const successColor = useThemeColor("success");
   const errorColor = useThemeColor("error");
+  const backgroundColor = useThemeColor("background");
+  const inputBorderColor = useThemeColor("inputBorder");
+
+  const changeScheduleType = (newVal: string) =>
+    setSchedule((prevState) => ({ type: newVal, days: prevState.days }));
+
+  const changeScheduleDay = (newVal: Record<string, any>) => {
+    setSchedule((prevState) => ({
+      ...prevState,
+      days: {
+        ...prevState.days,
+        ...newVal,
+      },
+    }));
+  };
 
   const handleCleanForm = () => {
     setTrainName("");
     setTrainNumber("");
     setDepartureTime("");
     setArrivalTime("");
-    setScheduleType("everyday");
+    setSchedule(defaultSchedule);
+    setEditMode(isNew);
   };
 
   const handleSubmit = async () => {
@@ -47,7 +88,7 @@ const TrainEditorScreen = () => {
         number: trainNumber,
         time_out: departureTime,
         time_in: arrivalTime,
-        schedule: "",
+        schedule: JSON.stringify(schedule),
         stops: "",
         comment: "",
       };
@@ -84,7 +125,7 @@ const TrainEditorScreen = () => {
       setTrainNumber(trainDetails.number);
       setDepartureTime(trainDetails.time_out);
       setArrivalTime(trainDetails.time_in);
-      setScheduleType(trainDetails.schedule || "everyday");
+      setSchedule(JSON.parse(trainDetails.schedule) || "everyday");
     } catch (error: any) {
       console.error("Error fetching train details:", error);
       Alert.alert("Error", "Failed to fetch train details. Please try again.");
@@ -93,7 +134,6 @@ const TrainEditorScreen = () => {
 
   useEffect(() => {
     handleCleanForm();
-    setEditMode(isNew);
     if (id !== "add") {
       getTrainData(id);
     }
@@ -157,6 +197,46 @@ const TrainEditorScreen = () => {
             onChangeText={setArrivalTime}
             placeholder="HH:MM"
           />
+          <ThemedSelect
+            disabled={!editMode}
+            value={schedule.type}
+            label="Schedule type"
+            options={trainScheduleOptions}
+            onSelect={(selectedItem: any) => {
+              changeScheduleType(selectedItem.value);
+            }}
+          />
+          {schedule.type === "custom" ? (
+            <View style={styles.customScheduleWrapper}>
+              <ThemedText>Schedule</ThemedText>
+              <View
+                style={[
+                  styles.daysWrapper,
+                  {
+                    backgroundColor,
+                    borderColor: inputBorderColor,
+                    borderWidth: 1,
+                  },
+                ]}
+              >
+                {Object.keys(schedule.days).map((key: string) => {
+                  const dayKey = key as DayName;
+                  return (
+                    <View key={dayKey} style={styles.dayItem}>
+                      <ThemedText>{dayKey}</ThemedText>
+                      <Checkbox
+                        disabled={!editMode}
+                        value={schedule.days[dayKey]}
+                        onValueChange={(newVal) =>
+                          changeScheduleDay({ [dayKey]: newVal })
+                        }
+                      />
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          ) : null}
           {!isNew ? (
             <ThemedButton
               title="Delete train"
@@ -169,6 +249,7 @@ const TrainEditorScreen = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   headlinePart: {
     flex: 1,
@@ -177,7 +258,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 14,
     lineHeight: 24,
   },
   rightPart: {
@@ -186,6 +267,24 @@ const styles = StyleSheet.create({
   title: {
     flex: 2,
     textAlign: "center",
+  },
+  customScheduleWrapper: {
+    display: "flex",
+    gap: 4,
+  },
+  daysWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 8,
+    gap: 8,
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  dayItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
   },
 });
 

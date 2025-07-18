@@ -42,15 +42,17 @@ class TrainsServiceClass {
 
   async getTrains(noCache = false) {
     const headers = await this.getAuthHeaders();
-    if (noCache) {
-      console.log("Fetching trains without cache");
-      const res = await this.api.get("/trains/list.php", { headers });
-      return res.data;
-    } else {
-      console.log("Fetching trains with cache");
-      const res = await this.fetchWithCache("/trains/list.php", { headers });
-      return res;
-    }
+    const res = await this.api.get("/trains/list.php", { headers });
+    return res.data;
+    // if (noCache) {
+    //   console.log("Fetching trains without cache");
+    //   const res = await this.api.get("/trains/list.php", { headers });
+    //   return res.data;
+    // } else {
+    //   console.log("Fetching trains with cache");
+    //   const res = await this.fetchWithCache("/trains/list.php", { headers });
+    //   return res;
+    // }
   }
 
   async addTrain(train: Train) {

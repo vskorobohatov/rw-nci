@@ -9,7 +9,7 @@ const tintColorDark = "#fff";
 export const Colors = {
   light: {
     text: "#11181C",
-    background: "#fff",
+    background: "#ffffff",
     tint: tintColorLight,
     icon: "#687076",
     tabIconDefault: "#687076",
@@ -17,6 +17,8 @@ export const Colors = {
     buttonText: "#0050a0ff",
     error: "#bb2b2bff",
     success: "#0aa44dff",
+    selectedOption: "#9ab1c8ff",
+    inputBorder: "#D1D1D1",
   },
   dark: {
     text: "#ECEDEE",
@@ -28,5 +30,7 @@ export const Colors = {
     buttonText: "#a6afd9ff",
     error: "#bb2b2bff",
     success: "#0aa44dff",
+    selectedOption: "#213951ff",
+    inputBorder: "#D1D1D1",
   },
 };

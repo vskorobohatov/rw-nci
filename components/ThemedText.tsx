@@ -38,33 +38,33 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 18,
   },
   defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 18,
     fontWeight: "600",
   },
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: "bold",
-    lineHeight: 28,
+    lineHeight: 22,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
   },
   link: {
-    lineHeight: 30,
-    fontSize: 16,
+    lineHeight: 18,
+    fontSize: 14,
     color: "#0a7ea4",
   },
   error: {
     color: "#FF231F7C",
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 18,
     fontWeight: "600",
   },
 });
