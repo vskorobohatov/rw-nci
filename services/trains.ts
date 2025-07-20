@@ -61,7 +61,7 @@ class TrainsServiceClass {
     return res.data;
   }
 
-  async getTrainDetails(id: number | string) {
+  async getTrainDetails(id: string | number) {
     const headers = await this.getAuthHeaders();
     const res = await this.api.get("/trains/get.php", {
       params: { id },
@@ -76,7 +76,7 @@ class TrainsServiceClass {
     return res.data;
   }
 
-  async deleteTrain(id: string): Promise<void> {
+  async deleteTrain(id: string | number): Promise<void> {
     const headers = await this.getAuthHeaders();
     await this.api.post(`/trains/delete.php`, { id }, { headers });
   }

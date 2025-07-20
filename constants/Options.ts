@@ -1,18 +1,40 @@
 export const trainScheduleOptions = [
   {
     label: "Daily",
-    value: "daily"
+    value: "daily",
   },
   {
     label: "Even days",
-    value: "even"
+    value: "even",
   },
   {
     label: "Odd days",
-    value: "Odd days"
+    value: "Odd days",
   },
   {
     label: "Custom",
-    value: "custom"
+    value: "custom",
+  },
+];
+
+export const eventTypeOptions = [
+  {
+    label: "Invalid",
+    value: "invalid",
+  },
+  {
+    label: "Parsel",
+    value: "Parsel",
+  },
+];
+
+export const actionOptions = [
+  {
+    label: "Receive",
+    value: "receive",
+  },
+  {
+    label: "Send",
+    value: "send",
   },
 ];

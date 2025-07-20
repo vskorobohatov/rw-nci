@@ -1,4 +1,5 @@
 import { ThemedButton } from "@/components/ThemedButton";
+import { ThemedDateTimePicker } from "@/components/ThemedDateTimePicker";
 import { ThemedHeadline } from "@/components/ThemedHeadline";
 import { ThemedInput } from "@/components/ThemedInput";
 import { ThemedSelect } from "@/components/ThemedSelect";
@@ -9,6 +10,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Train, TrainsService } from "@/services/trains";
 import Checkbox from "@react-native-community/checkbox";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -44,11 +46,11 @@ const defaultSchedule = {
 const TrainEditorScreen = () => {
   const searchParams = useLocalSearchParams();
   const id = searchParams.id as string;
-  const isNew = id === "add";
+  const isNew = id === "new";
   const router = useRouter();
-  const [departureTime, setDepartureTime] = useState("");
+  const [arrivalTime, setArrivalTime] = useState(new Date());
+  const [departureTime, setDepartureTime] = useState(new Date());
   const [editMode, setEditMode] = useState(isNew);
-  const [arrivalTime, setArrivalTime] = useState("");
   const [trainName, setTrainName] = useState("");
   const [trainNumber, setTrainNumber] = useState("");
   const [schedule, setSchedule] = useState<Schedule>(defaultSchedule);
@@ -75,8 +77,8 @@ const TrainEditorScreen = () => {
   const handleCleanForm = () => {
     setTrainName("");
     setTrainNumber("");
-    setDepartureTime("");
-    setArrivalTime("");
+    setDepartureTime(new Date());
+    setArrivalTime(new Date());
     setSchedule(defaultSchedule);
     setEditMode(isNew);
   };
@@ -86,13 +88,13 @@ const TrainEditorScreen = () => {
       const trainData: Train = {
         name: trainName,
         number: trainNumber,
-        time_out: departureTime,
-        time_in: arrivalTime,
+        time_out: moment(departureTime).format("HH:mm"),
+        time_in: moment(arrivalTime).format("HH:mm"),
         schedule: JSON.stringify(schedule),
         stops: "",
         comment: "",
       };
-      if (id !== "add") {
+      if (!isNew) {
         trainData.id = id;
         await TrainsService.editTrain(trainData);
       } else {
@@ -105,9 +107,9 @@ const TrainEditorScreen = () => {
     }
   };
 
-  const handleDeleteTrain = async () => {
+  const handleDeleteTrain = async (trainId: string | number) => {
     try {
-      await TrainsService.deleteTrain(id);
+      await TrainsService.deleteTrain(trainId);
       router.back();
     } catch (error: any) {
       console.error("Error deleting train:", error);
@@ -123,8 +125,8 @@ const TrainEditorScreen = () => {
       console.log("Train details:", trainDetails);
       setTrainName(trainDetails.name);
       setTrainNumber(trainDetails.number);
-      setDepartureTime(trainDetails.time_out);
-      setArrivalTime(trainDetails.time_in);
+      setDepartureTime(moment(trainDetails.time_out, "HH:mm").toDate());
+      setArrivalTime(moment(trainDetails.time_in, "HH:mm").toDate());
       setSchedule(JSON.parse(trainDetails.schedule) || "everyday");
     } catch (error: any) {
       console.error("Error fetching train details:", error);
@@ -134,7 +136,7 @@ const TrainEditorScreen = () => {
 
   useEffect(() => {
     handleCleanForm();
-    if (id !== "add") {
+    if (!isNew) {
       getTrainData(id);
     }
   }, [id]);
@@ -183,19 +185,19 @@ const TrainEditorScreen = () => {
             value={trainName}
             onChangeText={setTrainName}
           />
-          <ThemedInput
-            editable={editMode}
+          <ThemedDateTimePicker
+            buttonText={moment(departureTime).format("HH:mm")}
+            disabled={!editMode}
             label="Departure time"
             value={departureTime}
-            onChangeText={setDepartureTime}
-            placeholder="HH:MM"
+            onChange={(newVal) => setDepartureTime(newVal)}
           />
-          <ThemedInput
-            editable={editMode}
+          <ThemedDateTimePicker
+            buttonText={moment(arrivalTime).format("HH:mm")}
+            disabled={!editMode}
             label="Arrival time"
             value={arrivalTime}
-            onChangeText={setArrivalTime}
-            placeholder="HH:MM"
+            onChange={(newVal) => setArrivalTime(newVal)}
           />
           <ThemedSelect
             disabled={!editMode}
@@ -241,7 +243,7 @@ const TrainEditorScreen = () => {
             <ThemedButton
               title="Delete train"
               color={errorColor}
-              onPress={() => handleDeleteTrain()}
+              onPress={() => handleDeleteTrain(id)}
             />
           ) : null}
         </View>
@@ -256,6 +258,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 8,
   },
   buttonText: {
     fontSize: 14,

@@ -5,10 +5,12 @@ import sharedStyles from "@/constants/Styles";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Train, TrainsService } from "@/services/trains";
 import { useRouter } from "expo-router";
+import moment from "moment";
 
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Button,
   Pressable,
   RefreshControl,
   SafeAreaView,
@@ -18,13 +20,14 @@ import {
 } from "react-native";
 
 export default function ScheduleScreen() {
-  const [refreshing, setRefreshing] = useState(false);
-  const backgroundColor = useThemeColor("background");
-  const textColor = useThemeColor("text");
   const router = useRouter();
-  const [trains, setTrains] = useState<Train[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [trains, setTrains] = useState<Train[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const textColor = useThemeColor("text");
+  const backgroundColor = useThemeColor("background");
 
   const fetchTrains = async (isRefresh = false) => {
     try {
@@ -49,7 +52,22 @@ export default function ScheduleScreen() {
   }, []);
 
   const onPressAddTrain = () => {
-    router.push("/TrainEditor/add");
+    router.push("/TrainEditor/new");
+  };
+
+  const handleDeleteTrain = async (trainId: string | number) => {
+    try {
+      await TrainsService.deleteTrain(trainId);
+    } catch (error: any) {
+      console.error("Error deleting train:", error);
+    }
+  };
+
+  const deleteAllTrains = () => {
+    trains.forEach((train: any) => {
+      handleDeleteTrain(train.id);
+    });
+    fetchTrains();
   };
 
   return (
@@ -61,6 +79,7 @@ export default function ScheduleScreen() {
             <IconSymbol size={22} name="plus" color={textColor} />
           </Pressable>
         </ThemedHeadline>
+        <Button title="Delete all trains" onPress={deleteAllTrains} />
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -84,8 +103,14 @@ export default function ScheduleScreen() {
                   >
                     <ThemedText>{`#${train.number}`}</ThemedText>
                     <ThemedText>{train.name}</ThemedText>
-                    <ThemedText>{`Arrival: ${train.time_in}`}</ThemedText>
-                    <ThemedText>{`Departure: ${train.time_out}`}</ThemedText>
+                    <ThemedText>{`Departure: ${moment(
+                      train.time_out,
+                      "HH:mm"
+                    ).format("HH:mm")}`}</ThemedText>
+                    <ThemedText>{`Arrival: ${moment(
+                      train.time_in,
+                      "HH:mm"
+                    ).format("HH:mm")}`}</ThemedText>
                   </Pressable>
                 ))
               ) : (
