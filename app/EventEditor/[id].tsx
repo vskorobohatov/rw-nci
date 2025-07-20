@@ -9,6 +9,7 @@ import sharedStyles from "@/constants/Styles";
 import {
   addEvent,
   deleteEvent,
+  editEvent,
   Event,
   getEventDetails,
 } from "@/helpers/eventsHelper";
@@ -39,6 +40,11 @@ const EventEditorScreen = () => {
     id: isNew ? uuid.v4() : id,
     type: eventTypeOptions[0].value,
     action: actionOptions[0].value,
+    date: new Date(),
+    fullName: "",
+    documentId: "",
+    comment: "",
+    notificationId: "",
     train: {
       id: "",
       number: "",
@@ -49,10 +55,6 @@ const EventEditorScreen = () => {
       stops: "",
       comment: "",
     },
-    date: new Date(),
-    fullName: "",
-    documentId: "",
-    comment: "",
   });
 
   const textColor = useThemeColor("text");
@@ -65,7 +67,11 @@ const EventEditorScreen = () => {
 
   const handleSubmit = async () => {
     try {
-      await addEvent(eventData);
+      if (isNew) {
+        await addEvent(eventData);
+      } else {
+        await editEvent(eventData);
+      }
       router.back();
     } catch (error: any) {
       console.log(error);

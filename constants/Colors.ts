@@ -19,6 +19,7 @@ export const Colors = {
     success: "#0aa44dff",
     selectedOption: "#9ab1c8ff",
     inputBorder: "#D1D1D1",
+    divider: "#D1D1D1",
   },
   dark: {
     text: "#ECEDEE",
@@ -32,5 +33,6 @@ export const Colors = {
     success: "#0aa44dff",
     selectedOption: "#213951ff",
     inputBorder: "#D1D1D1",
+    divider: "#D1D1D1",
   },
 };

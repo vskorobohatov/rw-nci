@@ -15,8 +15,7 @@ async function schedulePushNotification({
   data?: Record<string, any>;
   seconds?: number;
 }) {
-  console.log("Scheduling notification", { title, body, data, seconds });
-  await Notifications.scheduleNotificationAsync({
+  const id = await Notifications.scheduleNotificationAsync({
     content: {
       title,
       body,
@@ -27,7 +26,12 @@ async function schedulePushNotification({
       seconds,
     },
   });
+  return id;
 }
+
+const cancelPushNotification = async (id: string) => {
+  await Notifications.cancelScheduledNotificationAsync(id);
+};
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -112,5 +116,11 @@ export default function useNotifications() {
     };
   }, []);
 
-  return { expoPushToken, notification, channels, schedulePushNotification };
+  return {
+    expoPushToken,
+    notification,
+    channels,
+    schedulePushNotification,
+    cancelPushNotification,
+  };
 }
