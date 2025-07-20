@@ -1,4 +1,5 @@
 import { ThemedButton } from "@/components/ThemedButton";
+import { ThemedDateTimePicker } from "@/components/ThemedDateTimePicker";
 import { ThemedHeadline } from "@/components/ThemedHeadline";
 import { ThemedInput } from "@/components/ThemedInput";
 import { ThemedSelect } from "@/components/ThemedSelect";
@@ -15,6 +16,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Train, TrainsService } from "@/services/trains";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { sortBy } from "lodash";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -24,7 +26,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { v4 as uuidv4 } from "uuid";
+import uuid from "react-native-uuid";
 
 const EventEditorScreen = () => {
   const router = useRouter();
@@ -34,7 +36,7 @@ const EventEditorScreen = () => {
   const [trains, setTrains] = useState<Train[]>([]);
   const [editMode, setEditMode] = useState(isNew);
   const [eventData, setEventData] = useState<Event>({
-    id: isNew ? uuidv4() : id,
+    id: isNew ? uuid.v4() : id,
     type: eventTypeOptions[0].value,
     action: actionOptions[0].value,
     train: {
@@ -56,8 +58,6 @@ const EventEditorScreen = () => {
   const textColor = useThemeColor("text");
   const successColor = useThemeColor("success");
   const errorColor = useThemeColor("error");
-  const backgroundColor = useThemeColor("background");
-  const inputBorderColor = useThemeColor("inputBorder");
 
   const handleCleanForm = () => {
     setEditMode(isNew);
@@ -95,7 +95,7 @@ const EventEditorScreen = () => {
   const getEventData = async () => {
     try {
       const data = await getEventDetails(id);
-      setEventData(data);
+      setEventData({ ...data, date: moment(data.date).toDate() });
     } catch (error: any) {
       console.error("Error fetching event details:", error);
       Alert.alert("Error", "Failed to fetch event details. Please try again.");
@@ -159,6 +159,17 @@ const EventEditorScreen = () => {
             onSelect={(selectedItem: any) => {
               setEventData({ ...eventData, action: selectedItem.value });
             }}
+          />
+
+          <ThemedDateTimePicker
+            mode="date"
+            buttonText={moment(eventData.date).format("DD.MM.YYYY")}
+            disabled={!editMode}
+            label="Date"
+            value={eventData.date}
+            onChange={(newVal: Date) =>
+              setEventData((prevState) => ({ ...prevState, date: newVal }))
+            }
           />
 
           <ThemedSelect

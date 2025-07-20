@@ -33,7 +33,7 @@ export const addEvent = async (newEvent: Record<string, any>) => {
 
 export const getEventDetails = async (id: string | number) => {
   const savedEvents = await getEvents();
-  return savedEvents.find((it: any) => it.id !== id);
+  return savedEvents.find((it: any) => it.id === id);
 };
 
 export const deleteEvent = async (id: string | number) => {
@@ -42,4 +42,9 @@ export const deleteEvent = async (id: string | number) => {
     EVENTS_STORAGE_KEY,
     JSON.stringify(savedEvents.filter((it: any) => it.id !== id))
   );
+};
+
+export const cleanAllEvents = async () => {
+  const savedEvents = await getEvents();
+  savedEvents.forEach(async (event: Event) => await deleteEvent(event.id));
 };

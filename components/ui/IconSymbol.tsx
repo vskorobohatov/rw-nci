@@ -21,6 +21,7 @@ const MAPPING = {
   clock: "schedule",
   gearshape: "settings",
   "square.and.arrow.down": "save",
+  plus: "add",
 } as IconMapping;
 
 /**

@@ -1,11 +1,13 @@
+import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedHeadline } from "@/components/ThemedHeadline";
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import sharedStyles from "@/constants/Styles";
-import { Event, getEvents } from "@/helpers/eventsHelper";
+import { cleanAllEvents, Event, getEvents } from "@/helpers/eventsHelper";
 import useNotifications from "@/hooks/useNotifications";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useRouter } from "expo-router";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 import {
@@ -51,7 +53,7 @@ export default function EventsScreen() {
   };
 
   const getEventTime = (event: Event) => {
-    return "Time";
+    return event.train[event.action === "receive" ? "time_in" : "time_out"];
   };
 
   return (
@@ -63,6 +65,8 @@ export default function EventsScreen() {
             <IconSymbol size={24} name="plus" color={textColor} />
           </Pressable>
         </ThemedHeadline>
+
+        <ThemedButton title="Clean events" onPress={cleanAllEvents} />
 
         <ScrollView
           refreshControl={
@@ -87,7 +91,13 @@ export default function EventsScreen() {
                     Action: {event.action}
                   </ThemedText>
                   <ThemedText style={styles.values}>
+                    Date: {moment(event.date).format("DD.MM.YYYY")}
+                  </ThemedText>
+                  <ThemedText style={styles.values}>
                     Time: {getEventTime(event)}
+                  </ThemedText>
+                  <ThemedText style={styles.values}>
+                    Train: {event.train.number} {event.train.name}
                   </ThemedText>
                 </Pressable>
               ))
