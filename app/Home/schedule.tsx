@@ -4,6 +4,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import sharedStyles from "@/constants/Styles";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Train, TrainsService } from "@/services/trains";
+import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import moment from "moment";
 
@@ -21,6 +22,7 @@ import {
 
 export default function ScheduleScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [trains, setTrains] = useState<Train[]>([]);
@@ -29,14 +31,9 @@ export default function ScheduleScreen() {
   const textColor = useThemeColor("text");
   const backgroundColor = useThemeColor("background");
 
-  const fetchTrains = async (isRefresh = false) => {
+  const fetchTrains = async () => {
     try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      const trainsRes = await TrainsService.getTrains(isRefresh);
+      const trainsRes = await TrainsService.getTrains();
       setError(null);
       setTrains(trainsRes.trains || []);
     } catch (error: any) {
@@ -48,8 +45,9 @@ export default function ScheduleScreen() {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchTrains();
-  }, []);
+  }, [isFocused]);
 
   const onPressAddTrain = () => {
     router.push("/TrainEditor/new");
@@ -84,7 +82,10 @@ export default function ScheduleScreen() {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => fetchTrains(true)}
+              onRefresh={() => {
+                setRefreshing(true);
+                fetchTrains();
+              }}
             />
           }
         >

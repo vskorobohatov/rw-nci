@@ -40,7 +40,7 @@ class TrainsServiceClass {
     }
   }
 
-  async getTrains(noCache = false) {
+  async getTrains() {
     const headers = await this.getAuthHeaders();
     const res = await this.api.get("/trains/list.php", { headers });
     return res.data;
